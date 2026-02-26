@@ -97,7 +97,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         from: 'HCC Bookings <onboarding@resend.dev>',
-        to: ['kamel.aziz@gmail.com','dwlison0505@icloud.com'],
+        to: ['kamel.aziz@gmail.com'],
         subject: `New HCC Booking — ${firstName} ${lastName} on ${date}`,
         html: emailHtml
       })
