@@ -94,8 +94,8 @@ export default async function handler(req, res) {
 
   const formData = new URLSearchParams();
   formData.append('from', `HCC Bookings <bookings@${MAILGUN_DOMAIN}>`);
-  formData.append('to', 'houstoncarpetcleaning3@gmail.com');
-  formData.append('to', 'SECOND_EMAIL_HERE@gmail.com');
+  formData.append('to', 'kamel.aziz@gmail.com');
+  formData.append('to', 'dwilson0505@icloud.com');
   formData.append('subject', `New HCC Booking — ${firstName} ${lastName} on ${date}`);
   formData.append('html', emailHtml);
 
