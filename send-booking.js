@@ -88,25 +88,34 @@ export default async function handler(req, res) {
     </div>
   `;
 
+  // Mailgun API uses form data
+  const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
+  const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN;
+
+  const formData = new URLSearchParams();
+  formData.append('from', `HCC Bookings <bookings@${MAILGUN_DOMAIN}>`);
+  formData.append('to', 'houstoncarpetcleaning3@gmail.com');
+  formData.append('to', 'SECOND_EMAIL_HERE@gmail.com');
+  formData.append('subject', `New HCC Booking — ${firstName} ${lastName} on ${date}`);
+  formData.append('html', emailHtml);
+
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        from: 'HCC Bookings <onboarding@resend.dev>',
-        to: ['kamel.aziz@gmail.com'],
-        subject: `New HCC Booking — ${firstName} ${lastName} on ${date}`,
-        html: emailHtml
-      })
-    });
+    const response = await fetch(
+      `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Basic ' + btoa(`api:${MAILGUN_API_KEY}`),
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData.toString()
+      }
+    );
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Resend error:', data);
+      console.error('Mailgun error:', data);
       return res.status(500).json({ error: 'Failed to send email', details: data });
     }
 
