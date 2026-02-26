@@ -317,6 +317,30 @@ function submitBooking() {
 
   console.log('📋 HCC Booking:', booking);
 
+  // Send email notification
+  try {
+    fetch('/api/send-booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        firstName: first,
+        lastName: last,
+        phone,
+        email,
+        address: addr,
+        services: svcs.map(s => s.name),
+        addons: adds.map(a => a.name),
+        date: dateStr,
+        time: selTime,
+        total,
+        notes
+      })
+    }).then(r => {
+      if (r.ok) console.log('✉️ Email notification sent');
+      else console.warn('⚠️ Email failed to send');
+    }).catch(err => console.warn('⚠️ Email error:', err));
+  } catch (e) { /* don't block the booking confirmation */ }
+
   // Show confirmation modal
   document.getElementById('modalMsg').textContent =
     `Thank you, ${first}! Your HCC cleaning has been scheduled. We'll send confirmation to ${email} within the hour.`;
